@@ -4,4 +4,3 @@ proxy(proxyPort)
 .then(()=>{
   // Use it for a while....
 })
-.then(() => proxy.stop())
