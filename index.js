@@ -1,3 +1,3 @@
 const proxy = require('@ucipass/proxy')
-const proxyPort = 3128
+const proxyPort = 8080
 proxy(proxyPort)
