@@ -51,15 +51,7 @@ const listener = server.listen(port, (err) => {
 
 server.on('connect', (req, clientSocket, head) => { // listen only for HTTP/1.1 CONNECT method
   console.log(clientSocket.remoteAddress, clientSocket.remotePort, req.method, req.url)
-  if (!req.headers['proxy-authorization']) { // here you can add check for any username/password, I just check that this header must exist!
-    clientSocket.write([
-      'HTTP/1.1 407 Proxy Authentication Required',
-      'Proxy-Authenticate: Basic realm="proxy"',
-      'Proxy-Connection: close',
-    ].join('\r\n'))
-    clientSocket.end('\r\n\r\n')  // empty body
-    return
-  }
+  
   const {port, hostname} = url.parse(`//${req.url}`, false, true) // extract destination host and port from CONNECT request
   if (hostname && port) {
     const serverErrorHandler = (err) => {
