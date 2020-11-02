@@ -20,6 +20,8 @@ const requestHandler = (req, res) => { // discard all request to proxy server ex
       headers: req.headers,
       method: req.method
     }
+    console.log(options)
+    console.log(protocol)
     if(protocol == "https"){
       var request = http.request(options, (response) => {
         res.writeHead(response.statusCode, response.headers)
