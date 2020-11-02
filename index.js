@@ -1,11 +1,42 @@
 const http = require('http')
+const https = require('https')
 const port = process.env.PORT || 9191
 const net = require('net')
 const url = require('url')
-
+var defPorts = {
+  http: 80,
+  https: 443/*,
+  // waiting for support
+  ws: 80,
+  wss: 443*/
+}
 const requestHandler = (req, res) => { // discard all request to proxy server except HTTP/1.1 CONNECT method
-  res.writeHead(405, {'Content-Type': 'text/plain'})
-  res.end('Method not allowed')
+  const {port, hostname, protocol, pathname, search, hash} = url.parse(`${req.url}`, false, true)
+  if(hostname&&protocol){
+    var options = {
+      host: hostname,
+      port: port ? port : defPorts[protocol],
+      path: pathname + search + hash,
+      headers: req.headers,
+      method: req.method
+    }
+    if(protocol == "https"){
+      var request = http.request(options, (response) => {
+        res.writeHead(response.statusCode, response.headers)
+        response.pipe(res)
+      })
+      req.pipe(request)
+    } else {
+      var request = https.request(options, (response) => {
+        res.writeHead(response.statusCode, response.headers)
+        response.pipe(res)
+      })
+      req.pipe(request)
+    }
+  } else {
+      res.writeHead(400, {'Content-Type': 'text/plain'})
+      res.end('Bad request')
+  }
 }
 
 const server = http.createServer(requestHandler)
