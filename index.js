@@ -22,7 +22,7 @@ const requestHandler = (req, res) => { // discard all request to proxy server ex
     }
     console.log(options)
     console.log(protocol)
-    if(protocol == "https"){
+    if(protocol == "https:"){
       var request = http.request(options, (response) => {
         res.writeHead(response.statusCode, response.headers)
         response.pipe(res)
